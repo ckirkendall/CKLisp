@@ -12,8 +12,8 @@
 
 (defn eval (exp) 
   (let (env *env*
-  		reader *reader*
-  		pexp (.parseAll reader (.exp reader) exp))
+        reader *reader*
+        pexp (.parseAll reader (.exp reader) exp))
     (.handle org.cklisp.Handler (.get pexp) env)))
 
 (defn first (lst) (.head lst))
