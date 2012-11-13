@@ -4,7 +4,7 @@ import scala.util.parsing.combinator.RegexParsers
 
 class Reader extends RegexParsers{ 
  
-  def ident: Parser[SYMBOL] = """[a-zA-Z_<>=?\.+\-/\*][a-zA-Z_<>=?\$\.]*""".r ^^ { id => SYMBOL(Symbol(id)) }
+  def ident: Parser[SYMBOL] = """[a-zA-Z_<>=?\.+\-/\*][a-zA-Z_<>=?\$\.\*]*""".r ^^ { id => SYMBOL(Symbol(id)) }
   
   def amp: Parser[SYMBOL] = """&""".r ^^ { sym => SYMBOL(Symbol(sym)) }
   

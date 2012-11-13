@@ -10,6 +10,12 @@
   (let (f (cons 'fn body)) 
   	'(def ~sym ~f)))
 
+(defn eval (exp) 
+  (let (env *env*
+  		reader *reader*
+  		pexp (.parseAll reader (.exp reader) exp))
+    (.handle org.cklisp.Handler (.get pexp) env)))
+
 (defn first (lst) (.head lst))
 (defn rest (lst) (.tail lst))
 

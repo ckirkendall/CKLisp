@@ -25,6 +25,9 @@
       
   (println "test5: should print 3 then List(4,5) then List(3,4,5)")
   (t 3 4 5) 
+  
+  (println "testing eval - should print '6'")
+  (eval "(println (+ 1 5))")
       
   (println "test6: should print 5 and get 1 as a final result of 5")
   (m (= a 5) (b (* a 5)) a))
