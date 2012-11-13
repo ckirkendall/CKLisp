@@ -40,6 +40,7 @@ object Handler {
 	def handleFn(exps: List[Exp], env: Env): Fn = exps match {
 	    case Nil => throw new RuntimeException("invalid fn statement")
 	    case xs::tail => Helper.unwrap(xs) match {
+	      case Nil => new ExpFn(Nil,tail,env)
 	      case args: List[Any] => new ExpFn(Helper.listAnytoListSymbol(args),tail,env) 
 	      case _ => throw new RuntimeException("invalid fn statement")
 	    }

@@ -23,12 +23,14 @@ object fn {
 class ExpFn(args: List[Symbol], body: List[Exp], origEnv: Env) extends Fn{
   def apply(env: Env, vals: List[Exp]): Any = {
     val nenv = new ChildEnv(origEnv)
-    val pairs = fn.zipArgs(args,vals);
-    pairs.foreach(pair => pair._2 match {
-      case l: List[Exp] => nenv.assign(pair._1, Handler.handle(l, env))
-      case x: Exp => nenv.assign(pair._1, Handler.handle(x, env))
-      case _ => throw new RuntimeException("invalid arguments")
-    })
+    if(!args.isEmpty){
+    	val pairs = fn.zipArgs(args,vals);
+	    pairs.foreach(pair => pair._2 match {
+	      case l: List[Exp] => nenv.assign(pair._1, Handler.handle(l, env))
+	      case x: Exp => nenv.assign(pair._1, Handler.handle(x, env))
+	      case _ => throw new RuntimeException("invalid arguments")
+	    })
+    }
     body.map(exp => Handler.handle(exp,nenv)).last
   }  
 }

@@ -19,10 +19,12 @@
 (defn first (lst) (.head lst))
 (defn rest (lst) (.tail lst))
 
+(def sysin (java.io.BufferedReader. (java.io.InputStreamReader. (.in java.lang.System))))
+
 (defn println (x) (.println (.out java.lang.System) (.toString x)))
 (defn print (x) (.print (.out java.lang.System) (.toString x)))
-(defn read (x) (.read (.in java.lang.System)))
-(defn readln (x) (.readLine (.in java.lang.System)))
+(defn read () (.read sysin))
+(defn readln () (.readLine sysin))
 
 (defn =  (x y) (.equals x y))
 (defn +  (x y) (.plus org.cklisp.Math x y))
