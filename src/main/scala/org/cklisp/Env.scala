@@ -10,7 +10,7 @@ abstract class Env {
 class ChildEnv(parent: Env) extends Env {
   
   val hash = HashMap[Symbol, Any]()
-  hash.put(Symbol("*env*"),this)
+  hash.put(Symbol("*curenv*"),this)
   
   def assign(sym: Symbol, ex: Any) = {
     hash.put(sym, ex)

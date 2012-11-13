@@ -11,7 +11,7 @@
   	'(def ~sym ~f)))
 
 (defn eval (exp) 
-  (let (env *env*
+  (let (env *curenv*
         reader *reader*
         pexp (.parseAll reader (.exp reader) exp))
     (.handle org.cklisp.Handler (.get pexp) env)))

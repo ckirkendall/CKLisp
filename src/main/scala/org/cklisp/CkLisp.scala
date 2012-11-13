@@ -24,6 +24,7 @@ object CkLisp extends App {
   
     val env = new ChildEnv(new NilEnv)
     env.assign(Symbol("*reader*"), reader)
+    env.assign(Symbol("*coreenv*"), env)
     val coreLib=loadFile("org/cklisp/core.lisp")   
     
     val coreExp =reader.parseAll(reader.namespace, coreLib)
