@@ -93,3 +93,40 @@ class ConstructorFn(clazz: Symbol) extends Fn {
   }
 }
 
+
+class tryFn extends Fn {
+  def isCatch(exp: Exp) = exp match {
+      case LIST(v) => v match {
+        case xs::tail => xs match {
+          case SYMBOL(Symbol("catch")) => true
+          case _ => false
+        }
+        case _ => false
+      }
+    }
+  def catchTransform(cExp: LIST): (Class[_], Exp) = cExp.value match {
+    case _::arg::body => arg match {
+      case LIST(SYMBOL(x)::SYMBOL(y)::Nil) => (Class.forName(y.name),LIST(SYMBOL(Symbol("let"))::LIST(SYMBOL(x)::SYMBOL(Symbol("*ex*"))::Nil)::body))
+      case _ => throw new RuntimeException("invalid argument to catch statement")
+    }
+    case _ => throw new RuntimeException("invalid catch statement")
+  }
+  
+  def apply(env: Env, vals: List[Exp]): Any = {
+    val body = vals.filter((a) => !isCatch(a))
+    val catches = vals.filter((a) => isCatch(a)).map((a) => catchTransform(a.asInstanceOf[LIST]))
+    try{
+      body.map(Handler.handle(_,env)).last
+    }catch {
+      case error: java.lang.Throwable => catches.dropWhile((exp) => !exp._1.isAssignableFrom(error.getClass())) match {
+        case Nil => throw error
+        case head::tail => {
+          env.assign(Symbol("*ex*"), error)
+          Handler.handle(head._2,env)
+          "Error"
+        }
+      }
+    }
+    
+  }
+}

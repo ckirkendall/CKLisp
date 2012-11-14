@@ -9,7 +9,9 @@
 (defn readloop ()
   (print "cklisp>")
   (let (exp (readln))
-    (println (seval exp)))
+    (try
+    	(println (seval exp))
+    	(catch (error java.lang.Throwable) (println "error found"))))
   (readloop))
 
 (readloop)
