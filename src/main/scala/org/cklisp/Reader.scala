@@ -14,7 +14,7 @@ class Reader extends RegexParsers{
   
   def fnum: Parser[FNUM] = """-?\d*\.\d+""".r ^^ { num => FNUM(num.mkString.toDouble) }
   
-  def lst: Parser[LIST] = "(" ~> repsep(exp, """\s*""".r) <~ """\)\w*""".r ^^ { args => LIST(args) }
+  def lst: Parser[LIST] = "(" ~> repsep(exp, """\s*""".r) <~ """\)""".r ^^ { args => LIST(args) }
   
   def quote: Parser[QUOTE] = "'" ~> act ^^ { obj => QUOTE(obj) }
   
