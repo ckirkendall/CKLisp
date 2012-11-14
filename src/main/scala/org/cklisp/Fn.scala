@@ -106,7 +106,7 @@ class tryFn extends Fn {
     }
   def catchTransform(cExp: LIST): (Class[_], Exp) = cExp.value match {
     case _::arg::body => arg match {
-      case LIST(SYMBOL(x)::SYMBOL(y)::Nil) => (Class.forName(y.name),LIST(SYMBOL(Symbol("let"))::LIST(SYMBOL(x)::SYMBOL(Symbol("*ex*"))::Nil)::body))
+      case LIST(SYMBOL(x)::SYMBOL(y)::Nil) => (Class.forName(y.name),LIST(List('let,List(x,Symbol("*ex*"))).map(Helper.wrap):::body))
       case _ => throw new RuntimeException("invalid argument to catch statement")
     }
     case _ => throw new RuntimeException("invalid catch statement")
