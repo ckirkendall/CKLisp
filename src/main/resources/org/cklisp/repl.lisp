@@ -11,7 +11,9 @@
   (let (exp (readln))
     (try
     	(println (seval exp))
-    	(catch (error java.lang.Throwable) (println "error found"))))
+    	(catch (error java.lang.Throwable) 
+    	  (.assign *coreenv* '*exception* error) 
+    	  (println "error found"))))
   (readloop))
 
 (readloop)
