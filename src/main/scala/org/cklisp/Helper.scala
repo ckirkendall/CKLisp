@@ -35,7 +35,7 @@ object Helper {
 	    case FNUM(v) => v
 	    case STRING(v) => v
 	    case SYMBOL(v) => v
-	    case UNQUOTE(v) => if(unquote) Handler.handle(v,env) else Symbol("~")::List(unwrap(v))
+	    case UNQUOTE(v) => if(unquote) Handler.handle(v,env,true) else Symbol("~")::List(unwrap(v))
 	    case QUOTE(v) => Symbol("'")::List(unwrap(v,unquote,env))
 	    case LIST(v) => v.map(a => unwrap(a, unquote,env)).toList
 	  }

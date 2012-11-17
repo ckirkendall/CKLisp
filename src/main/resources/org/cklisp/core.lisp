@@ -14,7 +14,7 @@
   (let (env *curenv*
         reader *reader*
         pexp (.parseAll reader (.exp reader) exp))
-    (.handle org.cklisp.Handler (.get pexp) env)))
+    (.handle org.cklisp.Handler (.get pexp) env true)))
 
 (defn first (lst) (.head lst))
 (defn rest (lst) (.tail lst))
@@ -25,6 +25,7 @@
 (defn print (x) (.print (.out java.lang.System) (.toString x)))
 (defn read () (.read sysin))
 (defn readln () (.readLine sysin))
+
 
 (defn =  (x y) (.equals x y))
 (defn +  (x y) (.plus org.cklisp.Math x y))

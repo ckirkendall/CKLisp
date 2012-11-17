@@ -21,7 +21,7 @@ class ChildEnv(parent: Env) extends Env {
   }
   
   override def toString: String = {
-    "Current Scope:" + hash.toString() + " ParentScope:" + parent.toString() 
+    "" 
   }
 }
 

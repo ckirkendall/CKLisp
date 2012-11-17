@@ -6,7 +6,7 @@ object CkLisp extends App {
   def handleFile(reader: Reader, env: Env, file: String): Any = {
     val prog = loadFile(file)
     val exps =reader.parseAll(reader.namespace, prog)
-    exps.get.map(exp => Handler.handle(exp,env)).last
+    exps.get.map(exp => Handler.handle(exp,env,true)).last
   }
   
   def loadFile(path: String): String = {
@@ -15,7 +15,7 @@ object CkLisp extends App {
     val source = Source.fromInputStream(fileStream)
     val lib=source.mkString
     source.close
-    println(lib)
+    //println(lib)
     lib
   }
   
@@ -29,8 +29,8 @@ object CkLisp extends App {
     val coreLib=loadFile("org/cklisp/core.lisp")   
     
     val coreExp =reader.parseAll(reader.namespace, coreLib)
-    coreExp.get.map(exp => Handler.handle(exp,env))
-    println(coreExp)
+    coreExp.get.map(exp => Handler.handle(exp,env,true))
+    //println(coreExp)
     args.toList match {
       case Nil => handleFile(reader,env, "org/cklisp/repl.lisp")
       case "-f"::file::rest => println("Final Result:"+handleFile(reader,env, file))

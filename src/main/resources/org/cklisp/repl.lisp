@@ -4,7 +4,7 @@
   (let (env *coreenv*
         reader *reader*
         pexp (.parseAll reader (.exp reader) exp))
-    (.handle org.cklisp.Handler (.get pexp) env)))
+    (.handle org.cklisp.Handler (.get pexp) env true)))
 
 (defn readloop ()
   (print "cklisp>")
