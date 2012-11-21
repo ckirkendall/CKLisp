@@ -18,23 +18,34 @@
 
 (defn first (lst) (.head lst))
 (defn rest (lst) (.tail lst))
-
-(def sysin (java.io.BufferedReader. (java.io.InputStreamReader. (.in java.lang.System))))
-
 (defn empty? (x) (.isEmpty x))
 (defn nil? (x) (.nilcheck org.cklisp.Math x))
 (defn str (x) (if (nil? x) "nil" (.toString x)))
+
+(def sysin (java.io.BufferedReader. (java.io.InputStreamReader. (.in java.lang.System))))
 
 (defn println (x) (.println (.out java.lang.System) (str x)))
 (defn print (x) (.print (.out java.lang.System) (str x)))
 (defn read () (.read sysin))
 (defn readln () (.readLine sysin))
 
+(defn map (f lst) 
+  (if (empty? lst)
+    ()
+    (cons (f (first lst)) (map f (rest lst)))))
+
+(defn reduce (f start lst) 
+  (if (empty? lst)
+    start
+    (reduce f (f start (first lst)) (rest lst))))
+
+(defn or (x y) (if x true y))
+(defn and (x y) (if x y false))
 
 (defn =  (x y) (.equals x y))
-(defn +  (x y) (.plus org.cklisp.Math x y))
-(defn -  (x y) (.minus org.cklisp.Math x y))
-(defn *  (x y) (.times org.cklisp.Math x y))
+(defn +  (x & y) (reduce (fn (a b) (.plus org.cklisp.Math a b)) x y))
+(defn -  (x & y) (reduce (fn (a b) (.minus org.cklisp.Math a b)) x y))
+(defn *  (x & y) (reduce (fn (a b) (.times org.cklisp.Math a b)) x y))
 (defn >  (x y) (.greater org.cklisp.Math x y))
 (defn <  (x y) (.less org.cklisp.Math x y))
 (defn >= (x y) (.greaterEq org.cklisp.Math x y))
