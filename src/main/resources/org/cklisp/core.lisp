@@ -21,8 +21,12 @@
 
 (def sysin (java.io.BufferedReader. (java.io.InputStreamReader. (.in java.lang.System))))
 
-(defn println (x) (.println (.out java.lang.System) (.toString x)))
-(defn print (x) (.print (.out java.lang.System) (.toString x)))
+(defn empty? (x) (.isEmpty x))
+(defn nil? (x) (.nilcheck org.cklisp.Math x))
+(defn str (x) (if (nil? x) "nil" (.toString x)))
+
+(defn println (x) (.println (.out java.lang.System) (str x)))
+(defn print (x) (.print (.out java.lang.System) (str x)))
 (defn read () (.read sysin))
 (defn readln () (.readLine sysin))
 

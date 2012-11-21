@@ -120,6 +120,7 @@ object Handler {
     if(exp.name.startsWith(".")) new MethodFn(exp)
     else if (exp.name.endsWith(".")) new ConstructorFn(exp)
     else if (exp.name.contains(".")) Class.forName(exp.name)
+    else if (exp.equals('nil)) null
     else env.lookup(exp)
   }
 	

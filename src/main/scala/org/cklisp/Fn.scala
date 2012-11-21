@@ -51,34 +51,33 @@ class MacroFn(args: List[Symbol], body: List[Exp], origEnv: Env) extends Fn{
 
 class MethodFn(meth: Symbol) extends Fn {
   def apply(env: Env, vals: List[Exp]): Any = {
-    vals match {
-      case Nil => throw new RuntimeException("invalid method call: no obj")
-      case exp::aexps => 
-        val obj = Handler.handle(exp,env,true)
-        val clazz = if(obj.isInstanceOf[java.lang.Class[_]]) obj.asInstanceOf[java.lang.Class[_]] else obj.getClass
-        val mname = meth.name.tail
-        val fieldOption = if(aexps.isEmpty) clazz.getFields.filter(_.getName.equals(mname)).headOption else None
-        fieldOption match {
-          case Some(v) => v.get(obj)
-          case None =>
-            val args = aexps.map((e) => Handler.handle(e,env,true))
-            val rel = ClazzUtils.findBestMatchMethod(clazz, mname, args)
-            val m = rel match {
-              case EXACT(m) => m
-              case COMPATABLE(m) => m
-              case NOREL() => throw new RuntimeException("invalid method call:"+clazz+":"+obj+":"+meth)
-            }
-            try{
-            	m.invoke(obj, args.map(_.asInstanceOf[java.lang.Object]):_*)
-            }catch{
-              case error: Throwable => {
-               println("invalid method call:"+clazz+":"+obj+":"+meth+":"+args)
-               throw error
-              }
-            }
+    try { 
+	    vals match {
+	      case Nil => throw new RuntimeException("invalid method call: no obj")
+	      case exp::aexps => 
+	        val obj = Handler.handle(exp,env,true)
+	        val clazz = if(obj.isInstanceOf[java.lang.Class[_]]) obj.asInstanceOf[java.lang.Class[_]] else obj.getClass
+	        val mname = meth.name.tail
+	        val fieldOption = if(aexps.isEmpty) clazz.getFields.filter(_.getName.equals(mname)).headOption else None
+	        fieldOption match {
+	          case Some(v) => v.get(obj)
+	          case None =>
+	            val args = aexps.map((e) => Handler.handle(e,env,true))
+	            val rel = ClazzUtils.findBestMatchMethod(clazz, mname, args)
+	            val m = rel match {
+	              case EXACT(m) => m
+	              case COMPATABLE(m) => m
+	              case NOREL() => throw new RuntimeException("invalid method call:"+clazz+":"+obj+":"+meth)
+	            }
+	            m.invoke(obj, args.map(_.asInstanceOf[java.lang.Object]):_*)
+	        }
+	    }
+	 } catch {
+        case error: Throwable => {
+          println("invalid method call:"+meth)
+          throw error
         }
-        
-    }
+     }
   }
 }
 

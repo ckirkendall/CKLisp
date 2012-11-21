@@ -43,5 +43,5 @@ object Math {
 	def greaterEq(x: Integer, y: Double) = x >= y
 	def greaterEq(x: Double, y: Double) = x >= y
 	
-	
+	def nilcheck (x: java.lang.Object) = if (x==null) true else false
 }

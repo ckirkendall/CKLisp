@@ -30,7 +30,7 @@ object ClazzUtils {
 	  case Some(v) => v.asInstanceOf[Relation[Method]] 
 	  case None => 
 	    val methods=clazz.getDeclaredMethods().filter(_.getName.equals(methodName))
-	    val compat=methods.foldLeft(Queue.empty[Relation[Method]])((a, b) => a+getMethodRelation(b, args)).filter(!_.equals(NOREL()))
+	    val compat=methods.foldLeft(Queue.empty[Relation[Method]])((a, b) => a+getRelation(b, args)).filter(!_.equals(NOREL()))
 	    val exacts = compat.filter(_ match { case EXACT(m) => true; case _ => false })
 	    exacts.headOption match {
 	      case Some(e) => addCache(cacheKey,e)
@@ -52,7 +52,7 @@ object ClazzUtils {
 	  case Some(v) => v.asInstanceOf[Relation[Constructor[T]]] 
 	  case None => 
 	    val cons=clazz.getDeclaredConstructors()
-	    val compat=cons.foldLeft(Queue.empty[Relation[Constructor[T]]])((a, b) => a+getConstructorRelation(b.asInstanceOf[Constructor[T]], args)).filter(!_.equals(NOREL()))
+	    val compat=cons.foldLeft(Queue.empty[Relation[Constructor[T]]])((a, b) => a+getRelation(b.asInstanceOf[Constructor[T]], args)).filter(!_.equals(NOREL()))
 	    val exacts = compat.filter(_ match { case EXACT(m) => true; case _ => false })
 	    exacts.headOption match {
 	      case Some(e) => addCache(cacheKey,e)
@@ -63,19 +63,20 @@ object ClazzUtils {
   
   
   def testClass[T](c1: Class[_], c2: Class[_], obj: T): Relation[T] = {
-    if(c1.equals(c2))  EXACT(obj)
+    if(c2.equals(c1))  EXACT(obj)
+    else if(c1==null && !c2.isPrimitive()) COMPATABLE(obj)
     else if (c2.isAssignableFrom(c1)) COMPATABLE(obj)
     else NOREL()
   }
   
-  def getConstructorRelation[T](cons: Constructor[T], args: List[Any]): Relation[Constructor[T]] = {
+  def getRelation[T](cons: T{def getParameterTypes() : scala.Array[Class[_]]}, args: List[Any]): Relation[T] = {
     if(cons.getParameterTypes().length == args.size){
       val zipArgs = args.zip(cons.getParameterTypes())
-      val rels = zipArgs.map((a) => testClass(a._1.getClass, a._2, cons))
+      val rels = zipArgs.map((a) => testClass((if (a._1==null) null else a._1.getClass), a._2, cons))
       rels.filter(_.equals(NOREL())).headOption match {
-        case Some(n) => n
+        case Some(n) => n.asInstanceOf[Relation[T]]
         case None => rels.filter(_.equals(COMPATABLE(cons))).headOption match {
-          case Some(c) => c
+          case Some(c) => c.asInstanceOf[Relation[T]]
           case None => EXACT(cons)
         }
       }
@@ -84,19 +85,5 @@ object ClazzUtils {
     }
   }
   
-  def getMethodRelation(method: Method, args: List[Any]) : Relation[Method] = {
-   if(method.getParameterTypes().length == args.size){
-      val zipArgs = args.zip(method.getParameterTypes())
-      val rels = zipArgs.map((a) => testClass(a._1.getClass,a._2, method))
-      rels.filter(_.equals(NOREL())).headOption match {
-        case Some(n) => n
-        case None => rels.filter(_.equals(COMPATABLE(method))).headOption match {
-          case Some(c) => c
-          case None => EXACT(method)
-        }
-      }
-    }else{
-      NOREL()
-    }
-  }
+ 
 }
